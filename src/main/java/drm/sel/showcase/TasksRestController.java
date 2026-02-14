@@ -35,7 +35,7 @@ public class TasksRestController {
 
     @GetMapping("{id}")
     // all parameters we get from the request are Strings, but Spring can convert them
-    public ResponseEntity<Task> handleGetTaskById(@PathVariable UUID id) {
+    public ResponseEntity<Task> handleGetTaskById(@PathVariable("id") UUID id) {
         // ResponseEntity.of() - takes Optional.
         // 200 if present, 404 if the value is empty
         return ResponseEntity.of(this.taskRepository.findById(id));
