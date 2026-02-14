@@ -29,7 +29,9 @@ public class InMemoryTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> findById(UUID id) {
-        return Optional.empty();
+        return this.tasks.stream()
+                .filter(t -> t.id().equals(id))
+                .findFirst();
     }
 
 }
