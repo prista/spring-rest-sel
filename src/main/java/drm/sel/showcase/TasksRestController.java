@@ -50,7 +50,7 @@ public class TasksRestController {
         if (payload.details() == null || payload.details().isBlank()) {
             var l10nMessage = this.messageSource.getMessage(
                     "tasks.create.details.errors.not_set",
-                    new Object[0], locale);
+                    new Object[0], locale); // new Object[0] - no parameters for the message
             return ResponseEntity.badRequest()
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new ErrorsPresentation(
