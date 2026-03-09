@@ -13,10 +13,7 @@ public class InMemoryTaskRepository implements TaskRepository {
 
     // rest-service is a multithreaded env,
     // better to use a thread-safe collection instead
-    private final List<Task> tasks = new LinkedList<>() {{
-        this.add(new Task("Первая задача"));
-        this.add(new Task("Вторая задача"));
-    }};
+    private final List<Task> tasks = new LinkedList<>();
 
     @Override
     public List<Task> findAll() {
@@ -35,4 +32,7 @@ public class InMemoryTaskRepository implements TaskRepository {
                 .findFirst();
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
 }
