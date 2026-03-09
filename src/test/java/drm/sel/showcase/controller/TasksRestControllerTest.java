@@ -1,5 +1,6 @@
 package drm.sel.showcase.controller;
 
+import drm.sel.showcase.model.ErrorsPresentation;
 import drm.sel.showcase.model.NewTaskPayload;
 import drm.sel.showcase.model.Task;
 import drm.sel.showcase.repository.TaskRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -87,13 +89,43 @@ class TasksRestControllerTest {
     void handleCreateTask_PayloadIsInvalid_ReturnsValidResponseEntity() {
         // given
         var details = "   "; // blank
-        var local = Locale.US;
+        var locale = Locale.US;
         var errorMessage = "Details must be set";
 
         doReturn(errorMessage).when(this.messageSource).getMessage(
                 "tasks.create.details.errors.not_set",
                 new Object[0],
-                local);
+                locale);
 
+        // when
+        var responseEntity = underTest.handleCreateTask(
+                new NewTaskPayload(details),
+                UriComponentsBuilder.fromUriString("http://localhost:8080"),
+                locale);
+
+        // then
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType());
+        assertEquals(new ErrorsPresentation(List.of(errorMessage)), responseEntity.getBody());
+
+        verifyNoInteractions(this.taskRepository);
+    }
+
+    @Test
+    void handleGetTaskById_ReturnsValidResponseEntity() {
+        // given
+        var id = UUID.randomUUID();
+        var details = "Task";
+        var task = new Task(id, details, false);
+        doReturn(Optional.of(task)).when(this.taskRepository).findById(id);
+
+        // when
+        var responseEntity = underTest.handleGetTaskById(id);
+
+        // then
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(task, responseEntity.getBody());
     }
 }
