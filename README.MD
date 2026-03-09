@@ -4,6 +4,9 @@ Otherwise, non-ASCII characters will be garbled.
 To use UTF-8 encoding go to Settings → Editor → File Encodings and set "Default encoding for properties files" to UTF-8.
 
 
+### git remove from indexing
+git rm --cached settings.local.json
+
 ###
 GET http://localhost:8080/api/tasks
 

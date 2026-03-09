@@ -1,4 +1,4 @@
-package drm.sel.showcase;
+package drm.sel.showcase.model;
 
 import java.util.UUID;
 

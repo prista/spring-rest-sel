@@ -1,5 +1,9 @@
-package drm.sel.showcase;
+package drm.sel.showcase.controller;
 
+import drm.sel.showcase.model.ErrorsPresentation;
+import drm.sel.showcase.model.NewTaskPayload;
+import drm.sel.showcase.model.Task;
+import drm.sel.showcase.repository.TaskRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

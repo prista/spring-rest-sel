@@ -1,5 +1,6 @@
-package drm.sel.showcase;
+package drm.sel.showcase.repository;
 
+import drm.sel.showcase.model.Task;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;

@@ -1,4 +1,6 @@
-package drm.sel.showcase;
+package drm.sel.showcase.repository;
+
+import drm.sel.showcase.model.Task;
 
 import java.util.List;
 import java.util.Optional;
