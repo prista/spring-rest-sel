@@ -4,6 +4,10 @@ Otherwise, non-ASCII characters will be garbled.
 To use UTF-8 encoding go to Settings → Editor → File Encodings and set "Default encoding for properties files" to UTF-8.
 
 
+### uuid command (windows)
+- **Windows:** `powershell -Command "[guid]::NewGuid().ToString()"`
+- **MacOS:** `uuidgen | tr '[:upper:]' '[:lower:]'`
+
 ### git remove from indexing
 git rm --cached settings.local.json
 
