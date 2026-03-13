@@ -12,20 +12,21 @@ Use the DocsExplorer subagent for efficient documentation lookup.
 
 ## Commands
 
-- **Build:** `mvn clean package`
-- **Run:** `mvn spring-boot:run` (serves on port 8080)
-
-No tests exist yet (no `src/test/` directory or test dependencies).
+- **Build:** `./mvnw clean package`
+- **Run:** `./mvnw spring-boot:run` (serves on port 8080)
+- **Test (IT only):** `./mvnw test -Dtest="TasksRestControllerIT"`
 
 ## Architecture
 
-Java 21 / Spring Boot 3.2 REST API. Single Maven module, single package `drm.sel.showcase`.
+Java 21 / Spring Boot 3.5 REST API. Single Maven module, single package `drm.sel.showcase`.
 
-- **Flow:** Controller → Service → Repository (in-memory `LinkedList`)
+- **Flow:** Controller → Repository (`JdbcOperations` → PostgreSQL)
 - **API base path:** `/api/tasks`
 - **Data classes:** Java records (`Task`, `NewTaskPayload`, `ErrorsPresentation`)
+- **DB migrations:** Flyway, `src/main/resources/db/migration/`
 - **Validation:** Manual in controller, i18n errors via `MessageSource`
 - **i18n:** `src/main/resources/messages*.properties` (default, `en`, `ru_RU`). UTF-8 encoding required.
+- **Integration tests:** Testcontainers (PostgreSQL 17.4-alpine) + `@ServiceConnection` via shared `TestcontainersConfiguration`. Test data loaded with `@Sql`.
 
 ## Gotcha
 
