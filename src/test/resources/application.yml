@@ -1,1 +1,5 @@
 # Datasource is auto-configured by Testcontainers @ServiceConnection
+spring:
+  security:
+    user:
+      password: password

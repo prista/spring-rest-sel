@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,7 +32,8 @@ class TasksRestControllerIT {
     @Test
     void handleGetAllTasks_ReturnsValidResponseEntity() throws Exception {
         // given
-        var requestBuilder = get("/api/tasks");
+        var requestBuilder = get("/api/tasks")
+                .with(httpBasic("user", "password"));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -60,6 +62,7 @@ class TasksRestControllerIT {
     void handleCreateTask_PayloadIsValid_ReturnsValidResponseEntity() throws Exception {
         // given
         var requestBuilder = post("/api/tasks")
+                .with(httpBasic("user", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -89,6 +92,7 @@ class TasksRestControllerIT {
     void handleCreateTask_PayloadIsInvalid_ReturnsValidResponseEntity() throws Exception {
         // given
         var requestBuilder = post("/api/tasks")
+                .with(httpBasic("user", "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.ACCEPT_LANGUAGE, "en-US")
                 .content("""
@@ -118,7 +122,8 @@ class TasksRestControllerIT {
     void handleGetTaskById_ReturnsValidResponseEntity() throws Exception {
         // given
         var id = UUID.fromString("b2715f0d-8459-4256-a8bc-078ceb6f04fd");
-        var requestBuilder = get("/api/tasks/{id}", id);
+        var requestBuilder = get("/api/tasks/{id}", id)
+                .with(httpBasic("user", "password"));
 
         // when
         this.mockMvc.perform(requestBuilder)
