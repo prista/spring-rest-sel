@@ -33,7 +33,7 @@ class TasksRestControllerIT {
     void handleGetAllTasks_ReturnsValidResponseEntity() throws Exception {
         // given
         var requestBuilder = get("/api/tasks")
-                .with(httpBasic("user", "password"));
+                .with(httpBasic("user1", "password1"));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -62,7 +62,7 @@ class TasksRestControllerIT {
     void handleCreateTask_PayloadIsValid_ReturnsValidResponseEntity() throws Exception {
         // given
         var requestBuilder = post("/api/tasks")
-                .with(httpBasic("user", "password"))
+                .with(httpBasic("user2", "password2"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
@@ -92,7 +92,7 @@ class TasksRestControllerIT {
     void handleCreateTask_PayloadIsInvalid_ReturnsValidResponseEntity() throws Exception {
         // given
         var requestBuilder = post("/api/tasks")
-                .with(httpBasic("user", "password"))
+                .with(httpBasic("user1", "password1"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.ACCEPT_LANGUAGE, "en-US")
                 .content("""
@@ -123,7 +123,7 @@ class TasksRestControllerIT {
         // given
         var id = UUID.fromString("b2715f0d-8459-4256-a8bc-078ceb6f04fd");
         var requestBuilder = get("/api/tasks/{id}", id)
-                .with(httpBasic("user", "password"));
+                .with(httpBasic("user2", "password2"));
 
         // when
         this.mockMvc.perform(requestBuilder)
