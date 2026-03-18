@@ -4,6 +4,7 @@ import drm.sel.showcase.model.ErrorsPresentation;
 import drm.sel.showcase.model.NewTaskPayload;
 import drm.sel.showcase.model.Task;
 import drm.sel.showcase.repository.TaskRepository;
+import drm.sel.showcase.security.ApplicationUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,14 +39,16 @@ class TasksRestControllerTest {
     @DisplayName("GET /api/tasks - returns HTTP-response with status 200 and body with all tasks")
     void handleGetAllTasks_ReturnsValidResponseEntity() {
         // given
+        var user = new ApplicationUser(UUID.randomUUID(), "user1", "password1");
+
         var tasks = List.of(
-                new Task(UUID.randomUUID(), "Первая задача", false),
-                new Task(UUID.randomUUID(), "Вторая задача", true)
+                new Task(UUID.randomUUID(), "Первая задача", false, user.id()),
+                new Task(UUID.randomUUID(), "Вторая задача", true, user.id())
         );
-        doReturn(tasks).when(taskRepository).findAll();
+        doReturn(tasks).when(taskRepository).findByApplicationUserId(user.id());
 
         // when
-        var responseEntity = underTest.handleGetAllTasks();
+        var responseEntity = underTest.handleGetAllTasks(user);
 
         // then
         assertNotNull(responseEntity);
@@ -57,10 +60,12 @@ class TasksRestControllerTest {
     @Test
     void handleCreateTask_PayloadIsValid_ReturnsValidResponseEntity() {
         // given
+        var user = new ApplicationUser(UUID.randomUUID(), "user1", "password1");
         var details = "Третья задача";
 
         // when
         var responseEntity = underTest.handleCreateTask(
+                user,
                 new NewTaskPayload(details),
                 // no matter what the value is
                 UriComponentsBuilder.fromUriString("http://localhost:8080"),
@@ -74,6 +79,7 @@ class TasksRestControllerTest {
             assertNotNull(task.id());
             assertEquals(details, task.details());
             assertFalse(task.completed());
+            assertEquals(user.id(), task.applicantUserId());
 
             assertEquals(URI.create("http://localhost:8080/api/tasks/" + task.id()),
                     responseEntity.getHeaders().getLocation());
@@ -88,6 +94,7 @@ class TasksRestControllerTest {
     @Test
     void handleCreateTask_PayloadIsInvalid_ReturnsValidResponseEntity() {
         // given
+        var user = new ApplicationUser(UUID.randomUUID(), "user1", "password1");
         var details = "   "; // blank
         var locale = Locale.US;
         var errorMessage = "Details must be set";
@@ -99,6 +106,7 @@ class TasksRestControllerTest {
 
         // when
         var responseEntity = underTest.handleCreateTask(
+                user,
                 new NewTaskPayload(details),
                 UriComponentsBuilder.fromUriString("http://localhost:8080"),
                 locale);
@@ -115,9 +123,10 @@ class TasksRestControllerTest {
     @Test
     void handleGetTaskById_ReturnsValidResponseEntity() {
         // given
+        var user = new ApplicationUser(UUID.randomUUID(), "user1", "password1");
         var id = UUID.randomUUID();
         var details = "Task";
-        var task = new Task(id, details, false);
+        var task = new Task(id, details, false, user.id());
         doReturn(Optional.of(task)).when(this.taskRepository).findById(id);
 
         // when

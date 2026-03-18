@@ -60,9 +60,10 @@ Controller → Service → Repository
 
 All endpoints are protected with HTTP Basic authentication via Spring Security.
 
-- `SecurityConfig` — configures stateless session management, disables CSRF, enables HTTP Basic auth
-- `ApplicationUser` — Java record implementing `UserDetails`
+- `SecurityConfig` — configures stateless session management, disables CSRF, enables HTTP Basic auth, requires authentication on all requests (`authorizeHttpRequests`)
+- `ApplicationUser` — Java record implementing `UserDetails`; injected into controller methods via `@AuthenticationPrincipal`
 - `ApplicationUserDetailsService` — extends `MappingSqlQuery` and implements `UserDetailsService`, loads users from `t_application_user` table
+- Tasks are user-scoped: `t_task.id_application_user` FK links each task to its owner. Users can only list and create their own tasks.
 
 ---
 

@@ -14,4 +14,5 @@ public interface TaskRepository {
 
     Optional<Task> findById(UUID id);
 
+    List<Task> findByApplicationUserId(UUID id);
 }

@@ -4,7 +4,9 @@ import drm.sel.showcase.model.ErrorsPresentation;
 import drm.sel.showcase.model.NewTaskPayload;
 import drm.sel.showcase.model.Task;
 import drm.sel.showcase.repository.TaskRepository;
+import drm.sel.showcase.security.ApplicationUser;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +34,10 @@ public class TasksRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> handleGetAllTasks() {
+    public ResponseEntity<List<Task>> handleGetAllTasks(@AuthenticationPrincipal ApplicationUser user) {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(this.taskRepository.findAll());
+                .body(this.taskRepository.findByApplicationUserId(user.id()));
     }
 
     @GetMapping("{id}")
@@ -49,6 +51,7 @@ public class TasksRestController {
     @PostMapping
     @Transactional
     public ResponseEntity<?> handleCreateTask( // ? - because response can be either Task or ErrorsPresentation
+            @AuthenticationPrincipal ApplicationUser user,
             @RequestBody NewTaskPayload payload,
             UriComponentsBuilder uriComponentsBuilder,
             Locale locale) { // locale is needed to get localized messages from the message source
@@ -63,7 +66,7 @@ public class TasksRestController {
                             List.of(l10nMessage)
                     ));
         }
-        var task = new Task(payload.details());
+        var task = new Task(payload.details(), user.id());
         this.taskRepository.save(task);
         return ResponseEntity.created(uriComponentsBuilder
                         .path("api/tasks/{taskId}")
