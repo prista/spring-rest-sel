@@ -10,7 +10,7 @@ At the current stage, the application:
 - exposes REST endpoints
 - stores data in PostgreSQL via JDBC (`spring-boot-starter-jdbc`)
 - uses Flyway for database migrations (`db/migration/`)
-- does not include authentication or security
+- uses HTTP Basic authentication with DB-backed user store (Spring Security)
 - does not include caching
 
 ### Core Features
@@ -32,6 +32,7 @@ At the current stage, the application:
 - PostgreSQL
 - Flyway (`flyway-core`, `flyway-database-postgresql`)
 - Jackson (JSON serialization)
+- Spring Security (`spring-boot-starter-security`)
 - Testcontainers + `spring-boot-testcontainers` (integration tests)
 
 
@@ -55,7 +56,17 @@ Controller → Service → Repository
 
 ---
 
-## 2.2 Application Layers
+## 2.2 Security Layer
+
+All endpoints are protected with HTTP Basic authentication via Spring Security.
+
+- `SecurityConfig` — configures stateless session management, disables CSRF, enables HTTP Basic auth
+- `ApplicationUser` — Java record implementing `UserDetails`
+- `ApplicationUserDetailsService` — extends `MappingSqlQuery` and implements `UserDetailsService`, loads users from `t_application_user` table
+
+---
+
+## 2.3 Application Layers
 
 ### Presentation Layer
 

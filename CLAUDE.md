@@ -20,13 +20,14 @@ Use the DocsExplorer subagent for efficient documentation lookup.
 
 Java 21 / Spring Boot 3.5 REST API. Single Maven module, single package `drm.sel.showcase`.
 
-- **Flow:** Controller → Repository (`JdbcOperations` → PostgreSQL)
+- **Flow:** HTTP Basic Auth (Spring Security) → Controller → Repository (`JdbcOperations` → PostgreSQL)
+- **Security:** HTTP Basic auth, `UserDetailsService` backed by `t_application_user`, stateless sessions, CSRF disabled. Package: `drm.sel.showcase.security`.
 - **API base path:** `/api/tasks`
 - **Data classes:** Java records (`Task`, `NewTaskPayload`, `ErrorsPresentation`)
 - **DB migrations:** Flyway, `src/main/resources/db/migration/`
 - **Validation:** Manual in controller, i18n errors via `MessageSource`
 - **i18n:** `src/main/resources/messages*.properties` (default, `en`, `ru_RU`). UTF-8 encoding required.
-- **Integration tests:** Testcontainers (PostgreSQL 17.4-alpine) + `@ServiceConnection` via shared `TestcontainersConfiguration`. Test data loaded with `@Sql`.
+- **Integration tests:** Testcontainers (PostgreSQL 17.4-alpine) + `@ServiceConnection` via shared `TestcontainersConfiguration`. Test data loaded with `@Sql`. IT tests use `httpBasic()` post-processor with test users loaded via `@Sql`.
 
 ## Gotcha
 

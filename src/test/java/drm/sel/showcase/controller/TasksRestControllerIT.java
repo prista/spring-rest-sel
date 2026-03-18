@@ -19,6 +19,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * @Sql executes before each test method in the class.
+ * This ensures test data is loaded fresh for every test, and since the class is annotated with @Transactional,
+ * changes are rolled back after each test.
+ */
 @Sql("/sql/tasks_rest_controller/test_data.sql")
 @Transactional
 @SpringBootTest
